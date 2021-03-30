@@ -49,8 +49,8 @@ jobs:
             npm run-script build
       - save_cache:
           paths: [frontend/node_modules]
-          key: frontend-build
-          
+          key: build-frontend
+
   build-backend:
     docker:
       - image: circleci/node:13.8.0
