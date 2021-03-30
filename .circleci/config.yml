@@ -234,6 +234,7 @@ jobs:
 
   cloudfront-update:
     docker:
+      image: circleci/node:13.8.0
       # Docker image here that supports AWS CLI
     steps:
       # Checkout code from git
