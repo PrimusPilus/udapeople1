@@ -44,7 +44,7 @@ jobs:
           name: Build front-end
           working_directory: frontend
           command: |
-            # Your code here
+          # Your code here
             npm install
             npm run-script build
             npm run-lint
@@ -63,7 +63,7 @@ jobs:
           name: Back-end build
           working_directory: backend
           command: |
-            # Your code here
+          # Your code here
              npm install
              npm run-script build
              npm run-lint
