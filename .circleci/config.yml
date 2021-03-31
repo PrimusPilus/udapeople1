@@ -47,7 +47,7 @@ jobs:
             npm i
             npm run build
             npm lint
-                        
+
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
