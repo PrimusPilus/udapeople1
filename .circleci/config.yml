@@ -44,10 +44,9 @@ jobs:
           name: Build front-end
           command: |
             # Your code here
-            npm i
-            npm run build
-            npm lint
-
+            npm install
+            npm run-script build
+            
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -63,9 +62,8 @@ jobs:
           name: Back-end build
           command: |
              # Your code here
-             npm i
-             npm run build
-             npm run lint
+            npm install
+            npm run-script build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
