@@ -42,6 +42,7 @@ jobs:
           keys: [frontend-build]
       - run:
           name: Build front-end
+           working_directory: frontend
           command: |
             # Your code here
             npm i
