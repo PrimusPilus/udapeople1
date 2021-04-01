@@ -84,8 +84,7 @@ jobs:
           name: Run frontend tests
           command: |
             cd frontend
-            npm run test
-      
+            npm run test      
   test-backend:
     docker:
       # Docker image here
@@ -115,7 +114,6 @@ jobs:
   #     - run:
   #         name: Scan front-end
   #         command: |
-  #           npm install
   #           npm audit --audit-level=critical
   # scan-backend:
   #   docker:
@@ -131,7 +129,6 @@ jobs:
   #     - run:
   #         name: Scan back-end
   #         command: |
-  #           npm install
   #           npm audit --audit-level=critical
 
 
