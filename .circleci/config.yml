@@ -86,7 +86,7 @@ jobs:
             cd frontend
             npm install
             npm run-script build
-            npm run test --prefix frontend
+            frontend $ npm run test
       
   # test-backend:
   #   docker:
