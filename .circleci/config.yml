@@ -131,7 +131,7 @@ jobs:
           name: Scan back-end
           command: |
             cd backend
-            npm audit --audit-level=critical
+            npm audit fix --audit-level=critical --force
 
 
   # deploy-infrastructure:
@@ -300,7 +300,7 @@ jobs:
 #               # your code here
 #             fi
             
-            
+
 workflows:
   default:
     jobs:
