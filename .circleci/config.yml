@@ -37,8 +37,8 @@ commands:
 jobs:
   build-frontend:
     docker:
-      # - image: circleci/node:13.8.0
-      
+      - image: circleci/node:13.8.0
+
     steps:
       - checkout
       - restore_cache:
@@ -57,6 +57,7 @@ jobs:
           channel: primus-team
           event: fail
           template: basic_fail_1
+      return 1
 
   build-backend:
     docker:
@@ -333,14 +334,14 @@ workflows:
           requires: [build-backend]
           context:
             - slack-secrets
-      - scan-frontend:
-          requires: [build-frontend]
-          context:
-            - slack-secrets
-      - scan-backend:
-          requires: [build-backend]
-          context:
-            - slack-secrets
+      # - scan-frontend:
+      #     requires: [build-frontend]
+      #     context:
+      #       - slack-secrets
+      # - scan-backend:
+      #     requires: [build-backend]
+      #     context:
+      #       - slack-secrets
 
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
