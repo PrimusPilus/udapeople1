@@ -71,10 +71,6 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-      - slack/notify:
-          channel: primus-team
-          event: fail
-          template: basic_fail_1
   test-frontend:
     docker:
       # Docker image here
@@ -105,6 +101,10 @@ jobs:
           command: |
             cd backend
             npm run test
+                - slack/notify:
+          channel: primus-team
+          event: fail
+          template: basic_fail_1
   scan-frontend:
     docker:
       # Docker image here
