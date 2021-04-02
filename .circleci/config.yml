@@ -57,8 +57,7 @@ jobs:
           channel: primus-team
           event: fail
           template: basic_fail_1
-      return 1
-
+      
   build-backend:
     docker:
       - image: circleci/node:13.8.0
