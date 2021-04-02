@@ -53,9 +53,6 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-          channel: primus-team
-          event: fail
-          template: basic_fail_1
       
   build-backend:
     docker:
@@ -74,9 +71,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-          channel: primus-team
-          event: fail
-          template: basic_fail_1
+
   test-frontend:
     docker:
       # Docker image here
@@ -112,7 +107,7 @@ jobs:
           channel: primus-team
           event: fail
           template: basic_fail_1  
-                     
+
   # scan-frontend:
   #   docker:
   #     # Docker image here
