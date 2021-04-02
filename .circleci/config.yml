@@ -111,7 +111,7 @@ jobs:
           command: |
             cd backend
             npm run test
-                - slack/notify:
+            - slack/notify:
           channel: primus-team
           event: fail
           template: basic_fail_1
