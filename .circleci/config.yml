@@ -69,7 +69,7 @@ jobs:
             cd backend
             npm install
             npm run build
-            return 1
+            
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -106,9 +106,10 @@ jobs:
             cd backend
             npm run test
       - slack/notify:
+          endpoint: https://hooks.slack.com/services/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
           channel: primus-team
-          event: fail
-          template: basic_fail_1  
+          # event: fail
+          # template: basic_fail_1  
 
   # scan-frontend:
   #   docker:
