@@ -105,9 +105,9 @@ jobs:
           command: |
             cd backend
             npm run test
-      - slack/notify:
-          endpoint: https://hooks.slack.com/services/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
-          channel: primus-team
+      # - slack/notify:
+      #     endpoint: https://hooks.slack.com/services/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
+      #     channel: primus-team
           # event: fail
           # template: basic_fail_1  
 
