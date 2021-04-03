@@ -34,10 +34,12 @@ commands:
             #  Add revert code here. You can find this in the Getting Started section.
               exit 1
             fi   
+
 jobs:
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
+
     steps:
       - checkout
       - restore_cache:
@@ -49,7 +51,7 @@ jobs:
             cd frontend
             npm install
             npm run build
-            # return 1(incomment to test slack notifications)
+            # return 1(incomment to test)
       - slack/notify:
           channel: '#primus-team'
           event: fail
@@ -61,6 +63,7 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+
   build-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -69,20 +72,12 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Back-end build
-          command: |
-            # Your code here
-            cd backend
-            npm install
-            npm run build
-      - slack/notify:
-        channel: '#primus-team'
-        event: fail
-        template: basic_fail_1
-      - slack/notify:
-          channel: '#primus-team'  
-          event: pass
-          template: success_tagged_deploy_1 
+        name: Back-end build
+        command: |
+          # Your code here
+          cd backend
+          npm install
+          npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -330,13 +325,13 @@ jobs:
 #               # your code here
 #             fi
             
+
 workflows:
   default:
     jobs:
       - build-frontend
-      - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
+      # - build-backend
+      # - test-frontend:      #     requires: [build-frontend]
       # - test-backend:
       #     requires: [build-backend]
       # - scan-frontend:
