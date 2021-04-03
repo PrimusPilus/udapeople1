@@ -13,7 +13,6 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World FROM DOCKER YAAAAAML!"}' https://hooks.slack.com/services/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
             # Your code here
             exit 1
 
@@ -50,11 +49,11 @@ jobs:
             # Your code here
             cd frontend
             npm install
-            npm run build
-            curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, from mukilteo!"}' https://hooks.slack.com/services/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
+            npm run build            
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      
   build-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -69,7 +68,6 @@ jobs:
             cd backend
             npm install
             npm run build
-            
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -88,7 +86,7 @@ jobs:
           name: Run frontend tests
           command: |
             cd frontend
-            npm run test    
+            npm run test
          
   test-backend:
     docker:
@@ -105,12 +103,10 @@ jobs:
           command: |
             cd backend
             npm run test
-      # - slack/notify:
-      #     endpoint: https://hooks.slack.com/services/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
-      #     channel: primus-team
-          # event: fail
-          # template: basic_fail_1  
-
+      - slack/notify:
+          channel: primus-team
+          event: fail
+          template: basic_fail_1  
 
   # scan-frontend:
   #   docker:
