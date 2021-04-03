@@ -87,15 +87,8 @@ jobs:
       - run:
           name: Run frontend tests
           command: |
-
-
             cd frontend
-            npm run test
-      # - slack/notify:
-      #     endpoint: https://hooks.slack.com/services/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
-      #     channel: primus-team
-      #     # event: fail
-      #     # template: basic_fail_1         
+            npm run test    
          
   test-backend:
     docker:
