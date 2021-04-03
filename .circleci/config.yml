@@ -55,21 +55,22 @@ jobs:
             return 1
       - slack/notify:
           channel: '#project'
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
+          template: basic_fail_1  
+          # custom: |
+          #   {
+          #     "blocks": [
+          #       {
+          #         "type": "section",
+          #         "fields": [
+          #           {
+          #             "type": "plain_text",
+          #             "text": "*This is a text notification*",
+          #             "emoji": true
+          #           }
+          #         ]
+          #       }
+          #     ]
+          #   }
           event: fail           
       # - save_cache:
       #     paths: [frontend/node_modules]
