@@ -48,8 +48,8 @@ jobs:
           command: |
             # Your code here
             cd frontend
-            npm install
-            npm run build
+            # npm install
+            # npm run build
             return 1
       - slack/notify:
           channel: '#project'
@@ -73,67 +73,67 @@ jobs:
       #     paths: [frontend/node_modules]
       #     key: frontend-build
       
-  build-backend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [backend-build]
-      - run:
-          name: Back-end build
-          command: |
-            # Your code here
-            cd backend
-            npm install
-            npm run build
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
-      # - slack/notify:
-      #   channel: primus-team
-      #   event: fail
-      #   template: basic_fail_1  
+  # build-backend:
+  #   docker:
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [backend-build]
+  #     - run:
+  #         name: Back-end build
+  #         command: |
+  #           # Your code here
+  #           cd backend
+  #           npm install
+  #           npm run build
+  #     - save_cache:
+  #         paths: [backend/node_modules]
+  #         key: backend-build
+  #     # - slack/notify:
+  #     #   channel: primus-team
+  #     #   event: fail
+  #     #   template: basic_fail_1  
 
-  test-frontend:
-    docker:
-      # Docker image here
-      - image: circleci/node:13.8.0
-    steps:
-      # Checkout code from git
-      - checkout      
-      # Restore from cache
-      - restore_cache:
-          keys: [frontend-build] 
-      - run:
-          name: Run frontend tests
-          command: |
-            cd frontend
-            npm run test
-      - slack/notify:
-        channel: primus-team
-        event: fail
-        template: basic_fail_1      
-  test-backend:
-    docker:
-      # Docker image here
-      - image: circleci/node:13.8.0
-    steps:
-      # Checkout code from git
-      - checkout      
-      # Restore from cache
-      - restore_cache:
-          keys: [backend-build]
-      - run:
-          name: Run backend tests
-          command: |
-            cd backend
-            npm run test
-            return 1      
-      - slack/notify:
-          channel: primus-team
-          event: fail
-          template: basic_fail_1  
+  # test-frontend:
+  #   docker:
+  #     # Docker image here
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #     # Checkout code from git
+  #     - checkout      
+  #     # Restore from cache
+  #     - restore_cache:
+  #         keys: [frontend-build] 
+  #     - run:
+  #         name: Run frontend tests
+  #         command: |
+  #           cd frontend
+  #           npm run test
+  #     - slack/notify:
+  #       channel: primus-team
+  #       event: fail
+  #       template: basic_fail_1      
+  # test-backend:
+  #   docker:
+  #     # Docker image here
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #     # Checkout code from git
+  #     - checkout      
+  #     # Restore from cache
+  #     - restore_cache:
+  #         keys: [backend-build]
+  #     - run:
+  #         name: Run backend tests
+  #         command: |
+  #           cd backend
+  #           npm run test
+  #           return 1      
+  #     - slack/notify:
+  #         channel: primus-team
+  #         event: fail
+  #         template: basic_fail_1  
 
   # scan-frontend:
   #   docker:
@@ -338,19 +338,18 @@ jobs:
 #               # your code here
 #             fi
             
-
 workflows:
   default:
     jobs:
       - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-          # context:
-          #   - slack-secrets
-      - test-backend:
-          requires: [build-backend]
-          context:
+      # - build-backend
+      # - test-frontend:
+      #     requires: [build-frontend]
+      #     # context:
+      #     #   - slack-secrets
+      # - test-backend:
+      #     requires: [build-backend]
+      #     context:
             - slack-secrets
       # - scan-frontend:
       #     requires: [build-frontend]
