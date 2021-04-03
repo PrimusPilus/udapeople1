@@ -45,7 +45,7 @@ jobs:
       - run:
           name: fail_step
           command: |
-            exit 1
+            return 1
       - slack/notify:
           channel: '#project'
           custom: |
