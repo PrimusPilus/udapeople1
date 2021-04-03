@@ -52,7 +52,7 @@ jobs:
             cd frontend
             # npm install
             # npm run build
-            return 1
+            # return 1
       - slack/notify:
           channel: '#primus-team'
           event: fail
