@@ -36,21 +36,16 @@ orbs:
 #               exit 1
 #             fi   
 jobs:
-  build-frontend:
+  notify:
     docker:
-      - image: circleci/node:13.8.0
-
+      - image: 'cimg/base:stable'
     steps:
-      - checkout
-      - restore_cache:
-          keys: [frontend-build]
+      # - ms-teams/report:
+      #     only_on_fail: false
+      #     webhook_url: $MS_TEAMS_WEBHOOK_URL
       - run:
-          name: Build front-end
+          name: fail_step
           command: |
-            # Your code here
-            cd frontend
-            # npm install
-            # npm run build
             return 1
       - slack/notify:
           channel: '#project'
@@ -69,7 +64,47 @@ jobs:
                 }
               ]
             }
-          event: fail           
+          event: fail
+workflows:
+  send-notification:
+    jobs:
+      - notify
+
+
+  # build-frontend:
+  #   docker:
+  #     - image: circleci/node:13.8.0
+
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [frontend-build]
+  #     - run:
+  #         name: Build front-end
+  #         command: |
+  #           # Your code here
+  #           cd frontend
+  #           # npm install
+  #           # npm run build
+  #           return 1
+  #     - slack/notify:
+  #         channel: '#project'
+  #         custom: |
+  #           {
+  #             "blocks": [
+  #               {
+  #                 "type": "section",
+  #                 "fields": [
+  #                   {
+  #                     "type": "plain_text",
+  #                     "text": "*This is a text notification*",
+  #                     "emoji": true
+  #                   }
+  #                 ]
+  #               }
+  #             ]
+  #           }
+  #         event: fail           
       # - save_cache:
       #     paths: [frontend/node_modules]
       #     key: frontend-build
@@ -339,9 +374,9 @@ jobs:
 #               # your code here
 #             fi
             
-workflows:
-  default:
-    jobs:
+# workflows:
+#   default:
+#     jobs:
       - build-frontend
       # - build-backend
       # - test-frontend:
