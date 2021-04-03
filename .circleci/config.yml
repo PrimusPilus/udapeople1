@@ -45,7 +45,7 @@ jobs:
       - run:
           name: fail_step
           command: |
-            return 1
+            exit 1
       - slack/notify:
           channel: '#project'
           custom: |
@@ -68,7 +68,6 @@ workflows:
   send-notification:
     jobs:
       - notify
-
 
   # build-frontend:
   #   docker:
