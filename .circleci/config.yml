@@ -1,7 +1,8 @@
 version: 2.1
 
 orbs:
-  slack: circleci/slack@4.3.3
+  slack: circleci/slack@4.1.1
+
 
 # commands:
 #   destroy-environment:
@@ -35,16 +36,21 @@ orbs:
 #               exit 1
 #             fi   
 jobs:
-  notify:
+  build-frontend:
     docker:
-      - image: 'cimg/base:stable'
+      - image: circleci/node:13.8.0
+
     steps:
-      # - ms-teams/report:
-      #     only_on_fail: false
-      #     webhook_url: $MS_TEAMS_WEBHOOK_URL
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
-          name: fail_step
+          name: Build front-end
           command: |
+            # Your code here
+            cd frontend
+            # npm install
+            # npm run build
             return 1
       - slack/notify:
           channel: '#project'
@@ -63,47 +69,7 @@ jobs:
                 }
               ]
             }
-          event: fail
-workflows:
-  send-notification:
-    jobs:
-      - notify
-
-
-  # build-frontend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [frontend-build]
-  #     - run:
-  #         name: Build front-end
-  #         command: |
-  #           # Your code here
-  #           cd frontend
-  #           # npm install
-  #           # npm run build
-  #           return 1
-  #     - slack/notify:
-  #         channel: '#project'
-  #         custom: |
-  #           {
-  #             "blocks": [
-  #               {
-  #                 "type": "section",
-  #                 "fields": [
-  #                   {
-  #                     "type": "plain_text",
-  #                     "text": "*This is a text notification*",
-  #                     "emoji": true
-  #                   }
-  #                 ]
-  #               }
-  #             ]
-  #           }
-  #         event: fail           
+          event: fail           
       # - save_cache:
       #     paths: [frontend/node_modules]
       #     key: frontend-build
@@ -372,12 +338,11 @@ workflows:
 #             then
 #               # your code here
 #             fi
-
             
-# workflows:
-#   default:
-#     jobs:
-      # - build-frontend
+workflows:
+  default:
+    jobs:
+      - build-frontend
       # - build-backend
       # - test-frontend:
       #     requires: [build-frontend]
