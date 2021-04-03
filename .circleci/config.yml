@@ -61,9 +61,9 @@ jobs:
           channel: '#primus-team'  
           event: pass
           template: success_tagged_deploy_1 
-      # - save_cache:
-      #     paths: [frontend/node_modules]
-      #     key: frontend-build
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
 
         # build-backend:
   #   docker:
