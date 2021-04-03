@@ -330,12 +330,12 @@ jobs:
 #               # your code here
 #             fi
             
-            
+
 workflows:
   default:
     jobs:
       - build-frontend
-         context:
+        context:
           - slack-secrets
       # - build-backend
       # - test-frontend:
