@@ -137,10 +137,7 @@ jobs:
           command: |
             cd frontend
             npm audit --audit-level=critical
-          # channel: primus-team
-          # event: fail
-          # template: basic_fail_1
-  scan-backend:
+
     docker:
       # Docker image here
       - image: circleci/node:13.8.0      
@@ -177,10 +174,10 @@ jobs:
               --tags project=udapeople \
               --stack-name "backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7}
-      # - slack/notify:
-      #     channel: '#primus-team'
-      #     event: always
-      #     template: basic_fail_1
+      - slack/notify:
+          channel: '#primus-team'
+          event: always
+          template: basic_fail_1
     
       # - run:
       #     name: Add backend ip to ansible inventory
