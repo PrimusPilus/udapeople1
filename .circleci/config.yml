@@ -162,16 +162,16 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      # - run:
-      #     name: Install prerequsites
-      #     command: |
-      #       yum -y install tar gzip jq git
+      - run:
+          name: Install prerequsites
+          command: |
+            yum -y install tar gzip jq git
 
       - run:
           name: Ensure backend infrastructure exists
           command: |
-            cd backend
-            build-backend:
+            # cd backend
+            # build-backend:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople \
