@@ -174,7 +174,7 @@ jobs:
           name: Scan back-end
           command: |
             cd backend
-            npm audit fix --audit-level=critical --force
+            npm audit fix --audit-level=critical
       - slack/notify:
           channel: '#centurio-1'
           event: fail
