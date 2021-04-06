@@ -186,13 +186,14 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      # - image: amazon/aws-cli
+      - image: amazon/aws-cli
       # Docker image here that supports AWS CLI
     steps:
       # Checkout code from git
       - run:
           name: Ensure back-end infrastructure exists
           command: |
+            pwd
             aws cloudformation deploy \
             --template-file .circleci/files/backend.yml \
             --tags project=udapeople \
@@ -207,15 +208,15 @@ jobs:
       #         # --stack-name "your front-end stack name with workflow id" \
       #         # --parameter-overrides ID="your workflow id"  
               
-      - run:
-          name: Add back-end ip to ansible inventory
-          command: |
-            # Your code here
-            exit 1
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/.circleci/ansible/inventory.txt
+      # - run:
+      #     name: Add back-end ip to ansible inventory
+      #     command: |
+      #       # Your code here
+      #       exit 1
+      # - persist_to_workspace:
+      #     root: ~/
+      #     paths:
+      #       - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure      
 
   # configure-infrastructure:
