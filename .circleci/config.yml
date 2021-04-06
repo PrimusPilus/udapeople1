@@ -177,6 +177,11 @@ jobs:
               --tags project=udapeople \
               --stack-name "backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7}
+      - slack/notify:
+          channel: '#primus-team'
+          event: always
+          message: "hi mom"
+    
       # - run:
       #     name: Add backend ip to ansible inventory
       #     command: |
