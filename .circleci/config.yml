@@ -3,43 +3,41 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.1.1
 
-commands:
-  # destroy-environment:
-  #   description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-  #   parameters:
-  #     # Add parameter here   
-  #   steps:
-  #     - run:
-  #         name: Destroy environments
-  #         when: on_fail
-  #         command: |
-  #           # Your code here
-  #           exit 1
+# commands:
+#   destroy-environment:
+#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+#     parameters:
+#       # Add parameter here   
+#     steps:
+#       - run:
+#           name: Destroy environments
+#           when: on_fail
+#           command: |
+#             # Your code here
+#             exit 1
 
-  # revert-migrations:
-  #   description: Revert the last migration if successfully run in the current workflow.
-  #   parameters:
-  #     # Add parameter here     
-  #   steps:
-  #     - run:
-  #         name: Revert migrations
-  #         # Add when this will run
-  #         command: |
-  #           # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-  #           SUCCESS = 1
-  #           if(( $SUCCESS==1 )); 
-  #           then
-  #           #  cd ~/project/backend
-  #           #  npm install
-  #           #  Add revert code here. You can find this in the Getting Started section.
-  #             exit 1
-  #           fi   
-
+#   revert-migrations:
+#     description: Revert the last migration if successfully run in the current workflow.
+#     parameters:
+#       # Add parameter here     
+#     steps:
+#       - run:
+#           name: Revert migrations
+#           # Add when this will run
+#           command: |
+#             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+#             SUCCESS = 1
+#             if(( $SUCCESS==1 )); 
+#             then
+#             #  cd ~/project/backend
+#             #  npm install
+#             #  Add revert code here. You can find this in the Getting Started section.
+#               exit 1
+#             fi   
 jobs:
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
-
     steps:
       - checkout
       - restore_cache:
@@ -53,11 +51,11 @@ jobs:
             npm run build
             # return 1(incomment to test)
       - slack/notify:
-          channel: '#primus-team'
+          channel: '#centurio-1'
           event: fail
           template: basic_fail_1
       - slack/notify:
-          channel: '#primus-team'  
+          channel: '#centurio-1'  
           event: pass
           template: success_tagged_deploy_1 
       - save_cache:
@@ -79,11 +77,11 @@ jobs:
             npm install
             npm run build
       - slack/notify:
-          channel: '#primus-team'
+          channel: '#centurio-1'
           event: fail
           template: basic_fail_1
       - slack/notify:
-          channel: '#primus-team'  
+          channel: '#centurio-1'  
           event: pass
           template: success_tagged_deploy_1
       - save_cache:
@@ -105,6 +103,15 @@ jobs:
           command: |
             cd frontend
             npm run test
+      - slack/notify:
+          channel: '#centurio-1'
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          channel: '#centurio-1'  
+          event: pass
+          template: success_tagged_deploy_1
+
   test-backend:
     docker:
       # Docker image here
@@ -120,6 +127,14 @@ jobs:
           command: |
             cd backend
             npm run test
+      - slack/notify:
+          channel: '#centurio-1'
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          channel: '#centurio-1'  
+          event: pass
+          template: success_tagged_deploy_1     
 
   scan-frontend:
     docker:
@@ -137,9 +152,14 @@ jobs:
           command: |
             cd frontend
             npm audit --audit-level=critical
-          channel: primus-team
+      - slack/notify:
+          channel: '#centurio-1'
           event: fail
           template: basic_fail_1
+      - slack/notify:
+          channel: '#centurio-1'  
+          event: pass
+          template: success_tagged_deploy_1
   scan-backend:
     docker:
       # Docker image here
@@ -156,62 +176,48 @@ jobs:
           command: |
             cd backend
             npm audit fix --audit-level=critical --force
+      - slack/notify:
+          channel: '#centurio-1'
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          channel: '#centurio-1'  
+          event: pass
+          template: success_tagged_deploy_1
 
-  deploy-infrastructure:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Install prerequsites
-          command: |
-            yum -y install tar gzip jq git
-
-      - run:
-          name: Ensure backend infrastructure exists
-          command: |
-            # cd backend
-            # build-backend:
-            aws cloudformation deploy \
-              --template-file .circleci/files/backend.yml \
-              --tags project=udapeople \
-              --stack-name "backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7}
-      # - run:
-      #     name: Add backend ip to ansible inventory
-      #     command: |
-      #       BACKEND_IP=`aws ec2 describe-instances \
-      #         --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-      #         --query "Reservations[*].Instances[*].[PublicDnsName]" \
-      #         --output text | tr -d '\n'`
-
-      #       echo $BACKEND_IP >> .circleci/ansible/inventory.txt
-      #       cat .circleci/ansible/inventory.txt
-
-      #       # put it in the shared memory
-      #       curl -H "Content-Type: text/plain" \
-      #         -H "token: e38aee29-a976-4696-843d-2d115c52219a" \
-      #         --request PUT \
-      #         --data "$BACKEND_IP" https://api.memstash.io/values/BACKEND_IP_${CIRCLE_WORKFLOW_ID:0:7}
-
-      # - persist_to_workspace:
-      #     root: ~/
-      #     paths:
-      #       - project/.circleci/ansible/inventory.txt
-
-      # - run:
-      #     name: Ensure frontend infrastructure exist
-      #     command: |
-      #       # build-frontend:
-      #       aws cloudformation deploy \
-      #       --template-file .circleci/files/frontend.yml \
-      #       --tags project=udapeople \
-      #       --stack-name "frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-      #       --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-      
-      # - slack-notification-fail
-      # - destroy-environment
-
+  # deploy-infrastructure:
+  #   docker:
+  #     # Docker image here that supports AWS CLI
+  #   steps:
+  #     # Checkout code from git
+  #     - run:
+  #         name: Ensure back-end infrastructure exists
+  #         command: |
+  #           aws cloudformation deploy \
+  #             --template-file .circleci/files/backend.yml \
+  #             #--tags project=your-tag \
+  #             # --stack-name "your back-end stack name with workflow id" \
+  #             # --parameter-overrides ID="your workflow id"  
+  #             exit 1
+  #     - run:
+  #         name: Ensure front-end infrastructure exist
+  #         command: |
+  #           aws cloudformation deploy \
+  #             --template-file .circleci/files/frontend.yml \
+  #             #--tags project=your-tag \
+  #             # --stack-name "your front-end stack name with workflow id" \
+  #             # --parameter-overrides ID="your workflow id"  
+  #             exit 1
+  #     - run:
+  #         name: Add back-end ip to ansible inventory
+  #         command: |
+  #           # Your code here
+  #           exit 1
+  #     - persist_to_workspace:
+  #         root: ~/
+  #         paths:
+  #           - project/.circleci/ansible/inventory.txt
+  #     # Here's where you will add some code to rollback on failure      
 
   # configure-infrastructure:
   #   docker:
@@ -344,8 +350,7 @@ jobs:
 #             then
 #               # your code here
 #             fi
-            
-
+       
 workflows:
   default:
     jobs:
@@ -359,11 +364,11 @@ workflows:
           requires: [build-frontend]
       - scan-backend:
           requires: [build-backend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-          filters:
-            branches:
-              only: [test-feature-branch]
+      # - deploy-infrastructure:
+      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #     filters:
+      #       branches:
+      #         only: [test-feature-branch]
       # - configure-infrastructure:
       #     requires: [deploy-infrastructure]
       # - run-migrations:
