@@ -218,7 +218,7 @@ jobs:
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters "Name=tag:project,Values=udapeople" \
             --output text >> .circleci/ansible/inventory.txt
-            print .circleci/ansible/inventory.txt
+            cat .circleci/ansible/inventory.txt
       - run:
           command: |
             URL=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicDNSName' --filters "Name=tag:project,Values=udapeople")
