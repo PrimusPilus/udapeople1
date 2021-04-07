@@ -208,16 +208,22 @@ jobs:
       #         # --stack-name "your front-end stack name with workflow id" \
       #         # --parameter-overrides ID="your workflow id"  
               
-      # - run:
-      #     name: Add back-end ip to ansible inventory
-      #     command: |
-      #       # Your code here
-      #       exit 1
-      # - persist_to_workspace:
-      #     root: ~/
-      #     paths:
-      #       - project/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure      
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters "Name=tag:project,Values=udapeople" \
+            --output text >> .circleci/ansible/inventory.txt
+      - run:
+          command: |
+            URL=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicDNSName' --filters "Name=tag:project,Values=udapeople")
+            curl -H "Content-Type: text/plain" -H "token:db089fd7-47e3-40ab-9bc6-96e92f914e8f" --request PUT --data ${URL} https://api.memstash.io/values/udapeople-backend${CIRCLE_WORKFLOW_ID}
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      #Here's where you will add some code to rollback on failure      
 
 
   # configure-infrastructure:
@@ -369,7 +375,7 @@ workflows:
             - scan-backend
             - scan-frontend
             - test-backend
-          #   - test-frontend        
+            - test-frontend        
           # filters:
           #   branches:
           #     only: [test-feature-branch]
