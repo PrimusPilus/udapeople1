@@ -240,7 +240,7 @@ jobs:
       # Add ssh keys with fingerprint
       - add_ssh_keys: 
           fingerprints: 
-            - 38:3e:0d:0d:47:48:fc:f2:ea:74:c4:37:f3:19:9a:59
+            - ab:13:ce:2d:42:16:1f:f8:af:fe:a3:3e:42:d8:e7:b8:cc:16:d3:bb
       # attach workspace
       - attach_workspace:
           at: ./
