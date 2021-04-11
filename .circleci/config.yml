@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.1.1
+  aws-cli: circleci/aws-cli@1.3.0
 
 parameters:
   workflow-id:
@@ -232,7 +233,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      #Here's where you will add some code to rollback on failure      
+      #Here's where you will add some  to rollback on failure      
 
 
   configure-infrastructure:
