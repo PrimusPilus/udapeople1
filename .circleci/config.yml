@@ -432,6 +432,7 @@ jobs:
 #             then
 #               # your code here
 #             fi
+
 workflows:
   default:
     jobs:
@@ -451,16 +452,16 @@ workflows:
           requires: [deploy-infrastructure]
       - run-db-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      #     filters:
-      #       branches:
-      #         only: [test-feature-branch]
-      # - deploy-backend:
-      #     requires: [run-migrations]
-      #     filters:
-      #       branches:
-      #         only: [test-feature-branch]
+      - deploy-frontend:
+          requires: [run-migrations]
+          filters:
+            branches:
+              only: [test-feature-branch]
+      - deploy-backend:
+          requires: [run-migrations]
+          filters:
+            branches:
+              only: [test-feature-branch]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
