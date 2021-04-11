@@ -452,7 +452,7 @@ workflows:
       - run-db-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
-          requires: [run-migrations]
+          requires: [run-db-migrations]
           filters:
             branches:
               only: [test-feature-branch]
