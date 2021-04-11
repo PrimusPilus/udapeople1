@@ -457,7 +457,7 @@ workflows:
             branches:
               only: [test-feature-branch]
       - deploy-backend:
-          requires: [run-migrations]
+          requires: [run-db-migrations]
           filters:
             branches:
               only: [test-feature-branch]
