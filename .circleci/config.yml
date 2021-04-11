@@ -279,7 +279,7 @@ jobs:
           name: Configure server using ansible playbook
           command: ansible-playbook -i inventory.txt .circleci/ansible/configure-server.yml
 
-  run-db-migrations:
+  run-migrations:
     docker:
       # Docker image here that supports NodeJS
       - image: circleci/node:13.8.0
@@ -291,7 +291,7 @@ jobs:
           command: |
             cd backend
             npm install
-            npm run db-migrations
+            npm run -migrations
             echo [has been executed successfully] >> migration_succeed
       - run:
           name: save udapeople db migrations
@@ -449,15 +449,15 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      - run-db-migrations:
+      - run-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
-          requires: [run-db-migrations]
+          requires: [run-migrations]
           filters:
             branches:
               only: [test-feature-branch]
       - deploy-backend:
-          requires: [run-db-migrations]
+          requires: [run-migrations]
           filters:
             branches:
               only: [test-feature-branch]
