@@ -3,6 +3,11 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.1.1
 
+parameters:
+  workflow-id:
+    type: string
+    default: "${CIRCLE_WORKFLOW_ID:0:7}"
+
 # commands:
 #   destroy-environment:
 #     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -338,7 +343,7 @@ jobs:
           name: Deploy frontend objects
           command: |
             aws s3 cp --recursive frontend/dist "s3://udapeople-<< pipeline.parameters.workflow-id >>"
-            
+
   # deploy-frontend:
   #   docker:
   #     - image: amazon/aws-cli
@@ -488,11 +493,11 @@ workflows:
           filters:
             branches:
               only: [test-feature-branch]
-      - deploy-backend:
-          requires: [run-migrations]
-          filters:
-            branches:
-              only: [test-feature-branch]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      #     filters:
+      #       branches:
+      #         only: [test-feature-branch]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
