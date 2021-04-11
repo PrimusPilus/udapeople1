@@ -291,7 +291,7 @@ jobs:
           command: |
             cd backend
             npm install
-            npm run migrations
+            npm run db-migrations
             echo [has been executed successfully] >> migration_succeed
       - run:
           name: save udapeople db migrations
