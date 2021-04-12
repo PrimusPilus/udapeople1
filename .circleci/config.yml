@@ -182,7 +182,7 @@ jobs:
           name: Scan back-end
           command: |
             cd backend
-            npm audit fix --audit-level=critical --force
+            npm audit fix --audit-level=critical 
           channel: '#centurio-1'
           event: fail
           template: basic_fail_1
@@ -489,4 +489,3 @@ workflows:
       #     requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
-      
