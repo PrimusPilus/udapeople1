@@ -11,7 +11,7 @@ parameters:
     default: "${CIRCLE_WORKFLOW_ID:0:7}"
   memstash-token:
     type: string
-    default: "b03a5070-d224-4270-80bc-2cf50290d789"
+    default: "db089fd7-47e3-40ab-9bc6-96e92f914e8f"
 
 # commands:
 #   revert-migrations:
@@ -226,7 +226,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      - destroy-environment
+     
             
   configure-infrastructure:
     docker:
@@ -234,7 +234,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["23:a2:ae:dc:92:1e:64:7f:3d:f4:87:4d:32:28:44:09"]
+          fingerprints: ["ab:13:ce:2d:42:16:1f:f8:af:fe:a3:3e:42:d8:e7:b8:cc:16:d3:bb"]
       - attach_workspace:
           at: ~/
       - run:
@@ -262,7 +262,7 @@ jobs:
           when: on_fail
           command: |
             apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
-      - destroy-environment
+     
       
   run-migrations:
     docker:
@@ -308,8 +308,7 @@ jobs:
               npm run migrations:revert
               echo "Migration revert"
             fi
-      - destroy-environment
-      
+            
   deploy-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -344,8 +343,7 @@ jobs:
           name: Deploy frontend objects
           command: |
             aws s3 cp --recursive frontend/dist "s3://udapeople-<< pipeline.parameters.workflow-id >>"
-      - revert-migrations
-      - destroy-environment  
+
                 
   deploy-backend:
     docker:
@@ -353,7 +351,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["23:a2:ae:dc:92:1e:64:7f:3d:f4:87:4d:32:28:44:09"]
+          fingerprints: ["ab:13:ce:2d:42:16:1f:f8:af:fe:a3:3e:42:d8:e7:b8:cc:16:d3:bb"]
       - attach_workspace:
           at: ~/
       - run:
@@ -375,8 +373,6 @@ jobs:
           when: on_fail
           command: |
             apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
-      - revert-migrations
-      - destroy-environment
 
   smoke-test:
     docker:
@@ -415,8 +411,7 @@ jobs:
           when: on_fail
           command: |
             apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
-      - revert-migrations
-      - destroy-environment
+
       
   cloudfront-update:
     docker:
@@ -482,12 +477,12 @@ workflows:
               only: [main]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
-      # - deploy-backend:
-      #     requires: [run-migrations]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-backend:
+          requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-frontend, deploy-backend]
       # - cloudfront-update:
