@@ -206,62 +206,62 @@ jobs:
               --stack-name "udapeople-backend-<< pipeline.parameters.workflow-id >>" \
               --parameter-overrides ID="<< pipeline.parameters.workflow-id >>" \
               --tags project=udapeople
-  #     - run:
-  #         name: Ensure front-end infrastructure exist
-  #         command: |
-  #           aws cloudformation deploy \
-  #             --template-file .circleci/files/frontend.yml \
-  #             --stack-name "udapeople-frontend-<< pipeline.parameters.workflow-id >>" \
-  #             --parameter-overrides ID="<< pipeline.parameters.workflow-id >>" \
-  #             --tags project=udapeople
-  #     - run:
-  #         name: Add back-end ip to ansible inventory
-  #         command: |
-  #           aws ec2 describe-instances \
-  #             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-  #             --filters "Name=tag:project,Values=udapeople" \
-  #             --output text >> .circleci/ansible/inventory.txt
-  #           cat .circleci/ansible/inventory.txt
-  #     - persist_to_workspace:
-  #         root: ~/
-  #         paths:
-  #           - project/.circleci/ansible/inventory.txt
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --stack-name "udapeople-frontend-<< pipeline.parameters.workflow-id >>" \
+              --parameter-overrides ID="<< pipeline.parameters.workflow-id >>" \
+              --tags project=udapeople
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople" \
+              --output text >> .circleci/ansible/inventory.txt
+            cat .circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
      
             
-  # configure-infrastructure:
-  #   docker:
-  #     - image: python:3.7-alpine3.11
-  #   steps:
-  #     - checkout
-  #     - add_ssh_keys:
-  #         fingerprints: ["ab:13:ce:2d:42:16:1f:f8:af:fe:a3:3e:42:d8:e7:b8:cc:16:d3:bb"]
-  #     - attach_workspace:
-  #         at: ~/
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           apk add --update ansible
-  #           cat .circleci/ansible/inventory.txt
-  #     - run:
-  #         name: Configure server
-  #         command: |
-  #           echo NODE_ENV=production >> "backend/.env"
-  #           echo ENVIRONMENT=production > "backend/.env"
-  #           echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> "backend/.env"
-  #           echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> "backend/.env"
-  #           echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "backend/.env"
-  #           echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
-  #           echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
-  #           echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
-  #           echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
-  #           echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
-  #           echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
-  #           ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
-  #     - run:
-  #         name: Install AWS CLI for rollback
-  #         when: on_fail
-  #         command: |
-  #           apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
+  configure-infrastructure:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["ab:13:ce:2d:42:16:1f:f8:af:fe:a3:3e:42:d8:e7:b8:cc:16:d3:bb"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            cat .circleci/ansible/inventory.txt
+      - run:
+          name: Configure server
+          command: |
+            echo NODE_ENV=production >> "backend/.env"
+            echo ENVIRONMENT=production > "backend/.env"
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> "backend/.env"
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> "backend/.env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
+      - run:
+          name: Install AWS CLI for rollback
+          when: on_fail
+          command: |
+            apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
      
       
   # run-migrations:
@@ -475,8 +475,8 @@ workflows:
           # filters:
           #   branches:
           #     only: [main]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-backend:
