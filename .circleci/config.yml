@@ -144,6 +144,7 @@ jobs:
           event: pass
           template: success_tagged_deploy_1     
 
+
   scan-frontend:
     docker:
       # Docker image here
@@ -159,7 +160,7 @@ jobs:
           name: Scan front-end
           command: |
             cd frontend
-            npm audit --audit-level=critical 
+            npm audit --audit-level=critical --force
       - slack/notify:
           channel: '#centurio-1'
           event: fail
