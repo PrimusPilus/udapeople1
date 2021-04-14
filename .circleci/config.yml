@@ -437,9 +437,6 @@ workflows:
           requires: [build-backend]
       - deploy-infrastructure:
           requires: [test-backend, test-frontend]
-          filters:
-            branches:
-              only: [main]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
