@@ -226,8 +226,6 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
             - project/backend/
-      - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   configure-infrastructure:
     docker:
@@ -375,9 +373,7 @@ jobs:
           when: on_fail
           command: |
             apk add --update py3-pip && pip3 install --upgrade pip && pip3 install awscli
-      - revert-migrations
-      - destroy-environment
-      
+        
   cloudfront-update:
     docker:
       - image: python:3.7-alpine3.11
@@ -396,9 +392,7 @@ jobs:
               --stack-name "udapeople-cloudfront" \
               --parameter-overrides WorkflowID="<< pipeline.parameters.workflow-id >>" \
               --tags project=udapeople
-      - revert-migrations
-      - destroy-environment
-      
+
   cleanup:
     docker:
       - image: cimg/base:2020.01
