@@ -42,11 +42,11 @@ orbs:
 #             aws cloudformation delete-stack --stack-name "udapeople-backend-<< pipeline.parameters.workflow-id >>"
 #             aws cloudformation delete-stack --stack-name "udapeople-frontend-<< pipeline.parameters.workflow-id >>"
 
+
 jobs:
   build-frontend:
     docker:
-      - image: circleci/node:13.8.0
-    steps:
+      - image: circleci/node:13.8.0    steps:
       - checkout
       - restore_cache:
           keys: [frontend-build]
