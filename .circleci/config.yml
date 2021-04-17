@@ -254,15 +254,11 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:latest
     steps:
       - checkout
-      - run: cd backend 
-             npm install
-             npm audit fix
       - run:
-          name: Run database migrations
-          no_output_timeout: 30m
+          name: run db migration
           command: |
             cd backend
             echo ENVIROMENT=$ENVIROMENT > ".env"
@@ -275,6 +271,7 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+            npm install
             touch migrations_log.txt
             npm run migrations >> migrations_log.txt
             cat migrations_log.txt
