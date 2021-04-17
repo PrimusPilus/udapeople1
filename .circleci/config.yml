@@ -257,8 +257,9 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      # - run: cd backend 
-      #        npm install
+      - run: cd backend 
+             npm install
+             npm audit fix
       - run:
           name: Run database migrations
           no_output_timeout: 30m
@@ -274,14 +275,10 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
-            npm install
-            npm audit fix
             touch migrations_log.txt
             npm run migrations >> migrations_log.txt
             cat migrations_log.txt
-            # cd backend
-            # npm run migrations | tee migration_results.txt
-            # cat migration_results.txt
+        
       - run:
           name: save migrations
           command: |
