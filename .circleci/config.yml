@@ -111,6 +111,7 @@ jobs:
           name: Run frontend tests
           command: |
             cd frontend
+            npm install
             npm run test
       - slack/notify:
           channel: '#centurio-1'
@@ -432,10 +433,10 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      - deploy-backend:
-          requires: [run-migrations]
-      - deploy-frontend:
-          requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-frontend, deploy-backend]
       # - cloudfront-update:
