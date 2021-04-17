@@ -194,7 +194,7 @@ jobs:
           event: pass
           template: success_tagged_deploy_1
           
-            deploy-infrastructure:
+  deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
     steps:
