@@ -252,6 +252,7 @@ jobs:
           command: |
             ansible-playbook -i inventory.txt configure-server.yml
 
+
   run-migrations:
     docker:
       - image: circleci/node:latest
@@ -279,12 +280,19 @@ jobs:
             cat migrations_log.txt
         
       - run:
-          name: save migrations
+          name: Send migration results to memstash
+          working_directory: ./backend
           command: |
-            cd backend
-            if grep "executed successfully" migration_results.txt
-            then
-            curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request PUT --data "true" https://api.memstash.io/values/<< pipeline.id >>_migrations
+            if grep -q "has been executed successfully" migrations.txt; then 
+              curl -H "Content-Type: text/plain" -H "token: 6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+            else
+              curl -H "Content-Type: text/plain" -H "token: 6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9" --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+            fi
+            SUCCESS=$(curl -H "token: 41becf56-e770-4630-a0e7-4f17f1d66667" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            echo "${SUCCESS}" 
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
              
   deploy-frontend:
     docker:
