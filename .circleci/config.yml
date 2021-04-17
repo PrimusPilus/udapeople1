@@ -257,11 +257,12 @@ jobs:
       - image: circleci/node:latest
     steps:
       - checkout
-        cd backend
+        
       - run:
           name: run db migration
           command: |
            
+            cd backend
             echo ENVIROMENT=$ENVIROMENT > ".env"
             echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
             echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
