@@ -10,9 +10,9 @@ orbs:
 #   workflow-id:
 #     type: string
 #     default: "${CIRCLE_WORKFLOW_ID:0:7}"
-#   memstash-token:
-#     type: string
-#     default: "b03a5070-d224-4270-80bc-2cf50290d789"
+  memstash-token:
+    type: string
+    default: "b03a5070-d224-4270-80bc-2cf50290d789"
 
 # commands:
 #   revert-migrations:
@@ -99,12 +99,9 @@ jobs:
 
   test-frontend:
     docker:
-      # Docker image here
       - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
       - checkout      
-      # Restore from cache
       - restore_cache:
           keys: [frontend-build] 
       - run:
@@ -124,12 +121,9 @@ jobs:
 
   test-backend:
     docker:
-      # Docker image here
       - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
       - checkout      
-      # Restore from cache
       - restore_cache:
           keys: [backend-build]
       - run:
@@ -148,15 +142,11 @@ jobs:
 
   scan-frontend:
     docker:
-      # Docker image here
       - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
       - checkout        
-      # Restore from cache
       - restore_cache:
           keys: [frontend-build]      
-      # Your job code here
       - run:
           name: Scan front-end
           command: |
