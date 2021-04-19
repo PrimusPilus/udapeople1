@@ -233,46 +233,46 @@ jobs:
             ansible-playbook -i inventory.txt configure-server.yml
 
 
-  # run-migrations:
-  #   docker:
-  #     - image: circleci/node:latest
-  #   steps:
-  #     - checkout
+  run-migrations:
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
         
-  #     - run:
-  #         name: run db migration
-  #         command: |
+      - run:
+          name: run db migration
+          command: |
            
-  #           cd backend
-  #           echo ENVIROMENT=$ENVIROMENT > ".env"
-  #           echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
-  #           echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
-  #           echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ".env"
-  #           echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ".env"
-  #           echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
-  #           echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
-  #           echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
-  #           echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
-  #           echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
-  #           npm install
-  #           touch migrations_log.txt
-  #           npm run migrations >> migrations_log.txt
-  #           cat migrations_log.txt
+            cd backend
+            echo ENVIROMENT=$ENVIROMENT > ".env"
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ".env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ".env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+            npm install
+            touch migrations_log.txt
+            npm run migrations >> migrations_log.txt
+            cat migrations_log.txt
         
-  #     - run:
-  #         name: migration output to memstash
-  #         working_directory: ./backend
-  #         command: |
-  #           if grep -q "has been executed successfully" migrations.txt; then 
-  #             curl -H "Content-Type: text/plain" -H "token: 6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
-  #           else
-  #             curl -H "Content-Type: text/plain" -H "token: 6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9" --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
-  #           fi
-  #           SUCCESS=$(curl -H "token: 6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-  #           echo "${SUCCESS}" 
-  #     - save_cache:
-  #         paths: [backend/node_modules]
-  #         key: backend-build
+      - run:
+          name: migration output to memstash
+          working_directory: ./backend
+          command: |
+            if grep -q "has been executed successfully" migrations.txt; then 
+              curl -H "Content-Type: text/plain" -H "token: 6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+            else
+              curl -H "Content-Type: text/plain" -H "token: 6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9" --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+            fi
+            SUCCESS=$(curl -H "token: 6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            echo "${SUCCESS}" 
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
              
   # deploy-frontend:
   #   docker:
@@ -436,8 +436,8 @@ workflows:
           requires: [test-backend, test-frontend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - deploy-frontend:
