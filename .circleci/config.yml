@@ -6,10 +6,10 @@ orbs:
   aws-cli: circleci/aws-cli@1.3.0
 
 commands:
-
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  unzip awscliv2.zip
-  sudo ./aws/install
+  sudo yum install wget
+  # curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  # unzip awscliv2.zip
+  # sudo ./aws/install
 
   
 # destroy-environment:
