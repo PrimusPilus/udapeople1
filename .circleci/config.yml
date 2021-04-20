@@ -6,7 +6,7 @@ orbs:
   aws-cli: circleci/aws-cli@1.3.0
 
 commands:
-destroy-environment:
+  destroy-environment:
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
     unzip awscliv2.zip
     sudo ./aws/install
@@ -27,7 +27,7 @@ destroy-environment:
 #             aws cloudformation delete-stack --stack-name udacity-frontend-${CIRCLE_WORKFLOW_ID:0:7}
 #             # Delete back end stack
 #             aws cloudformation delete-stack --stack-name udacity-backend-${CIRCLE_WORKFLOW_ID:0:7}
-revert-migrations:
+  revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
       # Add parameter here     
     steps:
