@@ -342,36 +342,36 @@ jobs:
   
   smoke-test:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: python:3.7-alpine3.11 
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl nodejs npm
-            pip install awscli
+            apk add --update tar gzip curl
       - run:
-          name: Backend url and smoke test.
+          name: Get backend url
           command: |
-            BACKEND_IP=$(aws ec2 describe-instances \
-            --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text)
-            echo ${BACKEND_IP}
-            curl "http://${BACKEND_IP}:3030/api/status"
-      # - destroy-environment:
-      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-      # - revert-migrations
-      # - run:
-      #     name: Frontend smoke test.
-      #     command: |
-      #       URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.website.us-west-2.amazonaws.com"
-      #       if curl -s ${URL} | grep "Welcome"
-      #       then
-      #         return 1
-      #       else
-      #         return 0
-      #       fi
+            export BACKEND_URL=$(sed -n 2p .circleci/ansible/inventory.txt)
+      - run:
+          name: Backend smoke test.
+          command: |
+            if curl -s https://${BACKEND_URL}:3030/api/status
+            then
+              return 1
+            else
+              return 0
+            fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-2.amazonaws.com"
+            if curl -s ${URL} | grep "Welcome"
+            then
+              return 1
+            else
+              return 0
+            fi
 
    
       
