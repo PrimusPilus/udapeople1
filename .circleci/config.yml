@@ -344,8 +344,7 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml        
             
-
-smoke-test:
+  smoke-test:
   docker:
     - image: python:3.7-alpine3.11 
   steps:
