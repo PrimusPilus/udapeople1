@@ -18,25 +18,25 @@ commands:
             aws cloudformation delete-stack --stack-name "udapeople-backend-<< pipeline.parameters.workflow-id >>"
             aws cloudformation delete-stack --stack-name "udapeople-frontend-<< pipeline.parameters.workflow-id >>"
 
-revert-migrations:
-    description: Revert the last migration if successfully run in the current workflow.
-      # Add parameter here     
-    steps:
-      - run:
-          name: Revert migrations
-          # Add when this will run
-          when: on_fail
-          command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            MIGRATION_RESULT=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/migration_result)
-            if(( ${MIGRATION_RESULT}==1 )); 
-            then
-              cd ~/project/backend
-              npm install
-              Add revert code here. You can find this in the Getting Started section.
-              npm run migrations:revert
-              exit 1
-            fi
+# revert-migrations:
+#     description: Revert the last migration if successfully run in the current workflow.
+#       # Add parameter here     
+#     steps:
+#       - run:
+#           name: Revert migrations
+#           # Add when this will run
+#           when: on_fail
+#           command: |
+#             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+#             MIGRATION_RESULT=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/migration_result)
+#             if(( ${MIGRATION_RESULT}==1 )); 
+#             then
+#               cd ~/project/backend
+#               npm install
+#               Add revert code here. You can find this in the Getting Started section.
+#               npm run migrations:revert
+#               exit 1
+#             fi
 
 
 jobs:
@@ -218,7 +218,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt
             - project/backend/
 
-      - destroy-environment
+      # - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -284,7 +284,7 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
 
-      - revert-migrations
+      # - revert-migrations
              
   deploy-frontend:
     docker:
@@ -319,7 +319,7 @@ jobs:
             cat .env
             ls -la
             aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
-      - destroy-environment
+      # - destroy-environment
             
   deploy-backend:
     docker:
@@ -353,7 +353,7 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml
 
-      - destroy-environment        
+      # - destroy-environment        
   
   smoke-test:
     docker:
@@ -388,7 +388,7 @@ jobs:
               return 0
             fi
 
-      - destroy-environment
+      # - destroy-environment
 
    
       
