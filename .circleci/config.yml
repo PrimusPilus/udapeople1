@@ -352,7 +352,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_URL=$(sed -n 2p .circleci/ansible/inventory.txt)
+            export BACKEND_URL=$(sed --quiet 2p .circleci/ansible/inventory.txt)
       - run:
           name: Backend smoke test.
           command: |
