@@ -5,33 +5,40 @@ orbs:
   slack: circleci/slack@4.2.0
   aws-cli: circleci/aws-cli@1.3.0
 
-# commands:
-#   revert-migrations:
-#     description: Revert the last migration if successfully run in the current workflow.
-#     steps:
-#       - run:
-#           name: Revert migrations
-#           when: on_fail
-#           command: |
-#             MIGRATION_STATUS=$(curl -H "token: << pipeline.parameters.memstash-token >>" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID})
-#             if(( $MIGRATION_STATUS=="true" )); 
-#             then
-#               cd backend
-#               npm i
-#               npm run migrations:revert
-#               echo "Migration reverted"
-#             fi
-           
-#   destroy-environment:
-#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-#     steps:
-#       - run:
-#           name: Destroy environments
-#           when: on_fail
-#           command: |
-#             aws s3 rm s3://udapeople-<< pipeline.parameters.workflow-id >> --recursive 
-#             aws cloudformation delete-stack --stack-name "udapeople-backend-<< pipeline.parameters.workflow-id >>"
-#             aws cloudformation delete-stack --stack-name "udapeople-frontend-<< pipeline.parameters.workflow-id >>"
+destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+      # Add parameter here   
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            # Delete files from bucket
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
+            # Delete front end stack
+            aws cloudformation delete-stack --stack-name udacity-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+            # Delete back end stack
+            aws cloudformation delete-stack --stack-name udacity-backend-${CIRCLE_WORKFLOW_ID:0:7}
+revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+      # Add parameter here     
+    steps:
+      - run:
+          name: Revert migrations
+          # Add when this will run
+          when: on_fail
+          command: |
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            MIGRATION_RESULT=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/migration_result)
+            if(( ${MIGRATION_RESULT}==1 )); 
+            then
+              cd ~/project/backend
+              npm install
+              Add revert code here. You can find this in the Getting Started section.
+              npm run migrations:revert
+              exit 1
+            fi
+
 
 jobs:
   build-frontend:
@@ -212,6 +219,8 @@ jobs:
             - project/.circleci/ansible/inventory.txt
             - project/backend/
 
+      - destroy-environment
+
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -231,6 +240,7 @@ jobs:
           working_directory: .circleci/ansible
           command: |
             ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment
 
 
   run-migrations:
@@ -258,6 +268,7 @@ jobs:
             touch migrations_log.txt
             npm run migrations >> migrations_log.txt
             cat migrations_log.txt
+           
         
       - run:
           name: migration output to memstash
@@ -273,6 +284,8 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+
+      - revert-migrations
              
   deploy-frontend:
     docker:
@@ -307,6 +320,7 @@ jobs:
             cat .env
             ls -la
             aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment
             
   deploy-backend:
     docker:
@@ -338,7 +352,9 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
-            ansible-playbook -i inventory.txt deploy-backend.yml        
+            ansible-playbook -i inventory.txt deploy-backend.yml
+
+      - destroy-environment        
   
   smoke-test:
     docker:
@@ -372,6 +388,8 @@ jobs:
             else
               return 0
             fi
+
+      - destroy-environment
 
    
       
