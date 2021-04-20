@@ -9,6 +9,9 @@ parameters:
   workflow-id:
     type: string
     default: "${CIRCLE_WORKFLOW_ID:0:7}"
+  memstash-token:
+    type: string
+    default: "6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9"
 
 commands:
 
