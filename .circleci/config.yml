@@ -218,7 +218,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt
             - project/backend/
 
-      # - destroy-environment
+      - destroy-environment
 
   configure-infrastructure:
     docker:
@@ -284,7 +284,7 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
 
-      # - revert-migrations
+      - revert-migrations
              
   deploy-frontend:
     docker:
@@ -319,7 +319,7 @@ jobs:
             cat .env
             ls -la
             aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
-      # - destroy-environment
+      - destroy-environment
             
   deploy-backend:
     docker:
@@ -353,7 +353,7 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml
 
-      # - destroy-environment        
+      - destroy-environment        
   
   smoke-test:
     docker:
@@ -388,7 +388,7 @@ jobs:
               return 0
             fi
 
-      # - destroy-environment
+      - destroy-environment
 
    
       
