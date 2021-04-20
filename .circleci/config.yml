@@ -360,7 +360,7 @@ smoke-test:
           export BACKEND_URL=$(sed -n 2p .circleci/ansible/inventory.txt)
     - run:
       name: Backend smoke test.
-        command: |
+      command: |
           if curl -s https://${BACKEND_URL}:3030/api/status
           then
             return 1
