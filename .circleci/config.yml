@@ -344,28 +344,28 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml        
             
-  smoke-test:
-    docker:
-      - image: python:3.7-alpine3.11 
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update tar gzip curl
-      - run:
-          name: Get backend url
-          command: |
-            export BACKEND_URL=$(sed -n 2p .circleci/ansible/inventory.txt)
-      - run:
-        name: Backend smoke test.
-        command: |
-          if curl -s https://${BACKEND_URL}:3030/api/status
-          then
-            return 1
-          else
-            return 0
-          fi
+  # smoke-test:
+  #   docker:
+  #     - image: python:3.7-alpine3.11 
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           apk add --update tar gzip curl
+  #     - run:
+  #         name: Get backend url
+  #         command: |
+  #           export BACKEND_URL=$(sed -n 2p .circleci/ansible/inventory.txt)
+  #     - run:
+  #       name: Backend smoke test.
+  #       command: |
+  #         if curl -s https://${BACKEND_URL}:3030/api/status
+  #         then
+  #           return 1
+  #         else
+  #           return 0
+  #         fi
 #   cloudfront-update:
 #     docker:
 #       # Docker image here that supports AWS CLI
@@ -424,9 +424,9 @@ workflows:
           requires: [run-migrations]
       - deploy-frontend:
           requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-frontend, deploy-backend]
-      # - cloudfront-update:
+      # - smoke-test:
+      #     requires: [deploy-frontend, deploy-backend]
+      # # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
