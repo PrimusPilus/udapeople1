@@ -346,24 +346,38 @@ jobs:
             
   smoke-test:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: amazon/aws-cli
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl nodejs npm
-            pip install awscli
+            echo ""
       - run:
-          name: Backend url and smoke test.
+          name: Get backend url
           command: |
-            BACKEND_IP=$(aws ec2 describe-instances \
-            --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text)
-            echo ${BACKEND_IP}
-            curl "http://${BACKEND_IP}:3030/api/status"
-
+            BACKEND_IP=$(curl -H "token: 6a2a4778-e9c2-4af9-b8d8-037bd84c4cd9" --request GET https://api.memstash.io/values/BACKEND_IP)
+            
+      - run:
+          name: Backend smoke test.
+          command: |
+            echo "${BACKEND_IP}"
+            if curl -sL --fail "http://${BACKEND_IP}:3000/api/status"; then
+              echo "Success"
+            else
+              echo "Fail"
+            fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-us-west-2.amazonaws.com/index.html"
+            if curl -s ${URL} | grep "Welcome";
+            then
+              exit 0
+            else
+              exit 1
+            fi
+ 
 #   cloudfront-update:
 #     docker:
 #       # Docker image here that supports AWS CLI
