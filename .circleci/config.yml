@@ -30,7 +30,6 @@ commands:
               npm run migrations:revert
             fi
 
-
 jobs:
   build-frontend:
     docker:
@@ -210,6 +209,9 @@ jobs:
             - project/.circleci/ansible/inventory.txt
             - project/backend/
 
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -271,6 +273,8 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+
+      - revert-migrations
              
   deploy-frontend:
     docker:
@@ -295,6 +299,7 @@ jobs:
             export API_URL="http://${BACKEND_IP}:3030"
             echo API_URL="http://${BACKEND_IP}:3030" >> "frontend/.env"
             cat frontend/.env
+            
       - run:
           name: Deploy frontend objects
           command: |
@@ -305,6 +310,9 @@ jobs:
             cat .env
             ls -la
             aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations
             
   deploy-backend:
     docker:
@@ -336,7 +344,11 @@ jobs:
             # echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
-            ansible-playbook -i inventory.txt deploy-backend.yml        
+            ansible-playbook -i inventory.txt deploy-backend.yml
+
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations        
 
   smoke-test:
     docker:
