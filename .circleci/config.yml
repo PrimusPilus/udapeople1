@@ -5,36 +5,30 @@ orbs:
   slack: circleci/slack@4.2.0
   aws-cli: circleci/aws-cli@1.3.0
 
-# commands:
-#   destroy-environment:
-#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-#     parameters:
-#       workflow_id:
-#         type: string
-#     steps:
-#       - run:
-#           name: Destroy environments
-#           when: on_fail
-#           command: |
-#              aws s3 rb s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --force
-#              echo "Destroying environment : <<parameters.workflow_id>>"
-#              aws cloudformation delete-stack --stack-name prod-frontend-<< parameters.workflow_id >>
-#              aws cloudformation delete-stack --stack-name prod-backend-<< parameters.workflow_id >>
-            
-#   revert-migrations:
-#     description: Revert the last migration if successfully run in the current workflow.
-#     steps:
-#       - run:
-#           name: Revert migrations
-#           command: |
-#             success_migration=$(curl https://keyvalue.immanuel.co/api/KeyVal/GetValue/${STORE_TOKEN}/workflow_id)
-#             if ((success_migrations== true));
-#             then
-#               cd backend
-#               npm i
-#               npm run migrations:revert
-#             fi
-#           when: on_fail
+commands:
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.  
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws cloudformation delete-stack --stack-name "udapeople-backend-stack"
+            aws cloudformation delete-stack --stack-name "udapeople-frontend-stack"
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.  
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            if grep -q "has been executed successfully" ~/project/backend/migrations.txt;
+            then
+              cd ~/project/backend
+              npm install
+              npm run migrations:revert
+            fi
 
 
 jobs:
