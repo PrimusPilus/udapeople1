@@ -395,7 +395,7 @@ jobs:
       - revert-migrations
       - destroy-environment
       
-      
+
   cloudfront-update:
     docker:
       - image: python:3.7-alpine3.11
@@ -455,9 +455,9 @@ workflows:
           requires: [build-backend]
       - deploy-infrastructure:
           requires: [test-backend, test-frontend]
-          filters:
-            branches:
-              only: [main]
+          # filters:
+          #   branches:
+          #     only: [main]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
